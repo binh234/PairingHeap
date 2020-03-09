@@ -39,6 +39,11 @@ public:
     ~PairingHeap(){
         clean(root);
     }
+    
+    Node* getRoot(){
+        return root;
+    }
+    
     void clean(){
         clean(root);
     }
@@ -65,18 +70,18 @@ int PairingHeap::FindMin(){
 void PairingHeap::Insert(int x){
     //Make x into a one-node tree and link it with current tree
     Node *newNode = new Node(x);
-    this->root=this->Meld(root,newNode);
+    this->root = this->Meld(root,newNode);
 }
 
 Node* PairingHeap::Meld(Node* root, Node* h){
     //Return the tree formed by linking current tree and h.
-    if (IsEmpty())return h;
+    if (IsEmpty()) return h;
     if (h==nullptr) return root;
-    int root1 = root->value;
-    int root2 = h->value;
+    int val1 = root->value;
+    int val2 = h->value;
 
     //Make the root of smaller key the parent of the root of larger key
-    if (root1 < root2){
+    if (val1 < val2){
         //Result root is root1 (current root)
         h->nextSibling = root->child;         //set right child of h (sibling)
         root->child = h;                      //insert h into left child of current root
@@ -95,12 +100,12 @@ Node* PairingHeap::Meld(Node* root, Node* h){
  * newVal must be smaller than the currently stored value.
  */
 void PairingHeap::DecreaseKey(Node*& X, int newVal){
-    if(newVal<X->value){
-        X->value=newVal;
-        if(X!=root){
-            Node* p= X;         //Cuts X's subtree from the heap
-            X=X->nextSibling;
-            p->nextSibling=nullptr;
+    if (newVal < X->value){
+        X->value = newVal;
+        if (X != root){
+            Node* p = X;         //Cuts X's subtree from the heap
+            X = X->nextSibling;
+            p->nextSibling = nullptr;
             root=Meld(root, p); //Link 2 trees resulting from the cut
         }
     }
@@ -114,7 +119,7 @@ void PairingHeap::DecreaseKey(Node*& X, int newVal){
  * In the second pass, links the remaining trees from right-to-left to form a single tree
  */
 Node* PairingHeap::TwoPassMeld(Node* p){
-    if(p==nullptr||p->nextSibling==nullptr)
+    if(p==nullptr || p->nextSibling==nullptr)
         return p;
     Node *A, *B, *newNode;
     A = p;
@@ -131,12 +136,12 @@ Node* PairingHeap::TwoPassMeld(Node* p){
 //Delete min value of the heap and return it
 //Return -1 if heap is empty
 int PairingHeap::DeleteMin(){
-    if(root==nullptr)
+    if (root == nullptr)
         return -1;
-    int res=root->value;
+    int res = root->value;
     Node* child=root->child;
     delete root;
-    root=TwoPassMeld(child);
+    root = TwoPassMeld(child);
     return res;
 }
 
@@ -148,11 +153,11 @@ void PairingHeap::Delete(Node*& key){
 
 //Cleans the heap
 void PairingHeap::clean(Node*& root){
-    if(root==nullptr)
+    if (root == nullptr)
         return;
-    if(root->child!=nullptr)
+    if (root->child != nullptr)
         clean(root->child);
-    if(root->nextSibling!=nullptr)
+    if (root->nextSibling != nullptr)
         clean(root->nextSibling);
     delete root;
     root=nullptr;
